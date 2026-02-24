@@ -146,3 +146,57 @@ If you want, I can next explain:
 * Difference between `join()` and `ThreadPoolExecutor`
 * How this interacts with GIL for I/O vs CPU tasks
 * Or how this maps to `asyncio.gather()` in async systems
+
+### Code Example (daemon thread without join)
+
+```python
+import threading
+import time
+
+def thread_1():
+    for i in range(5):
+        print("this is daemon thread")
+        time.sleep(2)
+
+t = threading.Thread(target=thread_1, daemon=True)
+
+t.start()
+time.sleep(5)
+print('main thread execution')
+```
+```python
+Output:
+this is daemon thread
+this is daemon thread
+this is daemon thread
+main thread execution
+```
+
+### Code Example (daemon thread with join)
+
+```python
+import threading
+import time
+
+def thread_1():
+    for i in range(5):
+        print("this is daemon thread")
+        time.sleep(2)
+
+t = threading.Thread(target=thread_1, daemon=True)
+
+t.start()
+time.sleep(5)
+print('main thread execution')
+t.join()
+```
+```python
+Output:
+this is daemon thread
+this is daemon thread
+this is daemon thread
+main thread execution
+this is daemon thread
+this is daemon thread
+```
+
