@@ -19,6 +19,7 @@ Test:
 Do you understand that exceptions surface only when calling `future.result()`?
 ---------------------------------------------------
 ## Solution Code-1 (Using executor.submit)
+```python
 import random
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -55,6 +56,8 @@ def run_demonstration():
 
 if __name__ == "__main__":
     run_demonstration()
+
+```
 
 ---------------------------------------------------
 ## Solution Code-2 (Using executor.map)
