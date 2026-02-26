@@ -1,6 +1,6 @@
 # 🔹 Level 1 — Core API Mastery (Must Know)
 
-## 1️⃣ Submit vs Map (Ordering Semantics)
+## 1️⃣ Submit (Ordering Semantics)
 
 Write a program that:
 
