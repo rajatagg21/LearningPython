@@ -1,3 +1,5 @@
+<pre>
+Date: 09/March/2026
 Attribute Inheritance Search
   - object vs instance namespace
   - obj.attr
@@ -9,3 +11,5 @@ Attribute Inheritance Search
 4 Non-data descriptor
 5 Parent classes (MRO)
 6 __getattr__()
+
+</pre>
