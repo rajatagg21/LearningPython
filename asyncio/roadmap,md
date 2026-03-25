@@ -1,0 +1,353 @@
+Got it—let’s build a **serious, engineering-level asyncio learning plan** tailored to you (ML engineer, building APIs, cares about performance + production).
+
+This is not theory-heavy fluff. This is **hands-on + system thinking + memory awareness**.
+
+---
+
+# 🚀 Asyncio Learning Plan (7 Days Intensive)
+
+## 🧠 Goal by the end
+
+You should be able to:
+
+* Build a **production-ready async API (FastAPI)**
+* Handle **10k+ concurrent requests**
+* Avoid **RAM + blocking pitfalls**
+* Combine async with your **ML inference pipeline**
+
+---
+
+# 📅 Day 1 — Foundations (Mental Model)
+
+### 🎯 Focus:
+
+* Event loop
+* Coroutine vs function
+* `await` concept
+
+### 📘 Learn:
+
+* What `async def` actually returns
+* Why `await` is required
+
+### 🧪 Practice:
+
+```python
+import asyncio
+
+async def task():
+    print("Start")
+    await asyncio.sleep(1)
+    print("End")
+
+asyncio.run(task())
+```
+
+👉 Modify:
+
+* Run 10 tasks
+* Observe execution order
+
+---
+
+### 🧠 Outcome:
+
+* You understand: **“async is cooperative multitasking”**
+
+---
+
+# 📅 Day 2 — Tasks & Concurrency
+
+### 🎯 Focus:
+
+* `create_task`
+* `gather`
+* concurrency vs parallelism
+
+### 🧪 Practice:
+
+```python
+async def work(i):
+    await asyncio.sleep(1)
+    return i
+
+async def main():
+    tasks = [asyncio.create_task(work(i)) for i in range(5)]
+    results = await asyncio.gather(*tasks)
+    print(results)
+```
+
+---
+
+### 🔥 Experiment:
+
+* Replace `await asyncio.sleep` with `time.sleep`
+  👉 See it break → understand blocking
+
+---
+
+### 🧠 Outcome:
+
+* You understand **why blocking kills async**
+
+---
+
+# 📅 Day 3 — Memory & Scaling (VERY IMPORTANT)
+
+### 🎯 Focus:
+
+* RAM usage patterns
+* `gather` vs `as_completed`
+* backpressure
+
+---
+
+### 🧪 Practice:
+
+#### ❌ Bad (memory heavy)
+
+```python
+results = await asyncio.gather(*tasks)
+```
+
+#### ✅ Good
+
+```python
+for coro in asyncio.as_completed(tasks):
+    result = await coro
+    print(result)
+```
+
+---
+
+### 🔥 Add concurrency limit:
+
+```python
+sem = asyncio.Semaphore(100)
+
+async def safe_task(i):
+    async with sem:
+        await asyncio.sleep(1)
+```
+
+---
+
+### 🧠 Outcome:
+
+* You understand:
+
+> “Async scales well only if you control concurrency + memory”
+
+---
+
+# 📅 Day 4 — Real I/O (HTTP calls)
+
+### 🎯 Focus:
+
+* Async HTTP clients
+* Replace blocking libraries
+
+---
+
+### 🧪 Practice with aiohttp:
+
+```python
+import aiohttp
+import asyncio
+
+async def fetch(session, url):
+    async with session.get(url) as res:
+        return await res.text()
+
+async def main():
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch(session, "https://example.com") for _ in range(10)]
+        await asyncio.gather(*tasks)
+
+asyncio.run(main())
+```
+
+---
+
+### ❌ Compare with:
+
+* `requests` (blocking)
+
+---
+
+### 🧠 Outcome:
+
+* You know how to do **real async I/O**
+
+---
+
+# 📅 Day 5 — Async + FastAPI (Production)
+
+### 🎯 Focus:
+
+* Async endpoints
+* High concurrency APIs
+
+---
+
+### 🧪 Build API using FastAPI:
+
+```python
+from fastapi import FastAPI
+import asyncio
+
+app = FastAPI()
+
+@app.get("/")
+async def root():
+    await asyncio.sleep(1)
+    return {"message": "Hello"}
+```
+
+---
+
+### 🔥 Experiment:
+
+* Simulate 1000 requests (use curl / script)
+* Observe performance
+
+---
+
+### 🧠 Outcome:
+
+* You understand how async powers APIs
+
+---
+
+# 📅 Day 6 — Async + Your ML Use Case 🔥
+
+### 🎯 Focus:
+
+* Async inference pipeline
+* batching + concurrency
+
+---
+
+### 🧪 Build:
+
+* API that:
+
+  * accepts text
+  * calls your model
+  * returns prediction
+
+---
+
+### ⚠️ Important:
+
+ML inference is **CPU-bound**
+
+👉 So:
+
+```python
+loop.run_in_executor(None, model_inference, input)
+```
+
+---
+
+### 🧠 Outcome:
+
+* You understand:
+
+> “Async handles I/O, but ML needs threads/processes”
+
+---
+
+# 📅 Day 7 — Advanced Patterns (Interview + Real World)
+
+### 🎯 Focus:
+
+* Producer-consumer
+* Queues
+* Rate limiting
+
+---
+
+### 🧪 Example:
+
+```python
+queue = asyncio.Queue()
+
+async def producer():
+    for i in range(100):
+        await queue.put(i)
+
+async def consumer():
+    while True:
+        item = await queue.get()
+        print(item)
+        queue.task_done()
+```
+
+---
+
+### 🔥 Add:
+
+* multiple consumers
+* rate limiting
+
+---
+
+### 🧠 Outcome:
+
+* You can design **real async systems**
+
+---
+
+# 🧠 Final System Design Thinking
+
+When you build your **semantic search API**, do:
+
+### ✅ Use async for:
+
+* Request handling
+* DB calls
+* External APIs
+
+### ⚠️ Use thread/process for:
+
+* Model inference
+
+---
+
+# 📊 Weekly Deliverable (IMPORTANT)
+
+By end of 7 days, you should have:
+
+### ✅ Project:
+
+```
+async-search-api/
+├── app.py (FastAPI async)
+├── inference.py (model)
+├── async_pipeline.py
+├── load_test.py
+```
+
+---
+
+### ✅ Features:
+
+* Async API
+* Controlled concurrency
+* Memory-safe processing
+* ML inference integration
+
+---
+
+# 🧠 Golden Rule (Burn this in brain)
+
+> Asyncio is not about speed.
+> It’s about **efficient waiting + controlled memory + high concurrency**
+
+---
+
+If you want, next I can:
+
+* Turn this into a **resume-worthy project**
+* Or give you **interview questions on asyncio (very tricky ones)**
