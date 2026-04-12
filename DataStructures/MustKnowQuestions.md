@@ -1,4 +1,4 @@
-### Understanding List References in Python: Mutable vs. Immutable
+### 1. Understanding List References in Python: Mutable vs. Immutable
 
 The core reason why `[[0]*3]*4` fails while `[0]*4` works as expected is the difference between **Value Replacement** and **In-place Mutation**.
 
@@ -65,3 +65,62 @@ print(mat_fixed)
 
 ### Summary for Notes
 > **Rule of Thumb:** Use `*` for 1D lists of primitives (integers, strings). Always use **List Comprehension** for 2D lists or lists of objects to avoid the "Shared Reference" bug.
+
+
+Both `b = arr.copy()` and `b = arr[:]` perform a **shallow copy**.
+
+In Python, these two methods are functionally identical. To understand why "shallow" matters, you have to look at what happens when you have nested structures (like a list inside a list).
+
+---
+
+### 2. Shallow Copy Behavior
+A shallow copy creates a new container (the outer list), but it fills that container with **references** to the items in the original list.
+
+* **If the items are immutable (integers, strings):** It feels like a deep copy because you can't change the items themselves; you can only replace them.
+* **If the items are mutable (nested lists, dictionaries):** Both the original and the copy will point to the **same** nested objects.
+
+### The Code Test
+```python
+original = [[1, 2, 3], "Apple"]
+# Both methods below are shallow
+copy_1 = original.copy()
+copy_2 = original[:]
+
+# 1. Modifying a primitive (No side effect)
+copy_1[1] = "Banana"
+print(original[1]) # "Apple" (Safe)
+
+# 2. Modifying a nested list (Side effect!)
+copy_1[0][0] = 99
+print(original[0][0]) # 99 (Shared reference!)
+```
+
+
+
+---
+
+## 2. How to get a Deep Copy
+If you want a completely independent clone where even the nested lists are unique objects, you must use the `copy` module.
+
+```python
+import copy
+
+original = [[1, 2, 3]]
+deep_b = copy.deepcopy(original)
+
+deep_b[0][0] = 99
+print(original[0][0]) # 1 (Truly independent)
+```
+
+---
+
+## Summary Comparison
+
+| Operation | Type | Result |
+| :--- | :--- | :--- |
+| `b = arr` | **Reference** | No new list; `b` is just another name for `arr`. |
+| `b = arr[:]` | **Shallow** | New outer list, but shared nested objects. |
+| `b = arr.copy()` | **Shallow** | Same as slicing; creates a new top-level container. |
+| `copy.deepcopy(arr)`| **Deep** | New outer list **and** new nested objects. |
+
+Essentially, the "shallow" methods only go one level deep. If you're dealing with the 2D matrices we discussed earlier, `.copy()` or `[:]` will still leave your rows linked!
